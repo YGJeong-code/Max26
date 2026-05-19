@@ -1,3 +1,4 @@
+-- Compatible: 3ds Max 2024+
 -- bipToPoint/lib/ikBone.ms
 -- Create UE-style IK driver points (ik_foot_*, ik_hand_*) constrained to FBX hand/foot.
 -- Re-running deletes any existing nodes with these names first to avoid duplicates

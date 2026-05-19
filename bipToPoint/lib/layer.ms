@@ -1,3 +1,4 @@
+-- Compatible: 3ds Max 2024+
 -- bipToPoint/lib/layer.ms
 -- Organize scene nodes into named export/control layers (UE-style export pipeline).
 -- Missing nodes are silently skipped so layerArrange is safe on partial scenes.

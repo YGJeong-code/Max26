@@ -1,3 +1,4 @@
+-- Compatible: 3ds Max 2024+
 -- bipToPoint/lib/bipAlign.ms
 -- Step 3: With Biped in figure mode, drive each Biped bone's pos/rot/scale from the
 -- corresponding pt_* helper. Also builds the weapon (prop) bones in the hands.

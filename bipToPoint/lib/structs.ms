@@ -1,3 +1,4 @@
+-- Compatible: 3ds Max 2024+
 -- bipToPoint/lib/structs.ms
 -- Node-reference structs for Biped, Point helpers, and FBX skeleton.
 -- All bone mapping lives in `b2p_BoneMap`; the three structs are generated

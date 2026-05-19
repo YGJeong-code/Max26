@@ -1,3 +1,4 @@
+-- Compatible: 3ds Max 2024+
 -- bipToPoint/lib/fbxToBip.ms
 -- Step 4: Constrain FBX bones to follow Biped bones (position + orientation),
 -- then drop figure mode so animation can drive the rig.

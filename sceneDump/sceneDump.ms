@@ -1,4 +1,12 @@
--- sceneDump.ms
+-- Compatible: 3ds Max 2024+
+/*
+sceneDump
+Scene structure / controllers / CA / wires text dump
+since 2026.05.18
+last updated 2026.05.19
+by YeonGyun, Jeong
+*/
+
 -- Writes a plain-text summary of the current scene (nodes, hierarchy, layers,
 -- optional positions/modifiers/rig details) so scene structure can be shared
 -- without the binary .max file.

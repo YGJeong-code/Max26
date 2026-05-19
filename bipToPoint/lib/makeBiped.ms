@@ -1,3 +1,4 @@
+-- Compatible: 3ds Max 2024+
 -- bipToPoint/lib/makeBiped.ms
 -- Step 1: Create a fresh Biped sized to the selected mesh (falls back to 180 if none).
 

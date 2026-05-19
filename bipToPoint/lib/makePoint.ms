@@ -1,3 +1,4 @@
+-- Compatible: 3ds Max 2024+
 -- bipToPoint/lib/makePoint.ms
 -- Step 2: Spawn pt_* helper points at each Biped bone, snap them to FBX positions,
 -- apply LookAt constraints chained along each limb, then bake to Euler.

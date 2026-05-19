@@ -1,3 +1,4 @@
+-- Compatible: 3ds Max 2024+
 -- bipToPoint/lib/rootMotion.ms
 -- Root-motion helper rig:
 --   99_XtrasBone layer:

@@ -1,4 +1,12 @@
--- skinToPoint.ms — standalone tool
+-- Compatible: 3ds Max 2024+
+/*
+skinToPoint
+Skin bone hierarchy -> Point helper swap with envelope save / restore
+since 2026.05.18
+last updated 2026.05.19
+by YeonGyun, Jeong
+*/
+
 -- Two skin-related tools and a small rollout that wires them together:
 --   SkinToPointTool — walks the rig hierarchy from root and creates Point
 --     helpers mirroring the source structure (with convention styling).
