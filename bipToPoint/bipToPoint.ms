@@ -1,6 +1,14 @@
--- bipToPoint.ms — entry point
--- Loads lib/* tool structs and opens the rollout. Each button wraps its work in
--- undo and validates required scene nodes before running.
+-- Compatible: 3ds Max 2024+
+/*
+bipToPoint
+Biped / FBX bone alignment + IK Bone / Root Motion setup
+since 2026.05.18
+last updated 2026.05.19
+by YeonGyun, Jeong
+*/
+
+-- Entry point — loads lib/* tool structs and opens the rollout. Each button
+-- wraps its work in undo and validates required scene nodes before running.
 
 -- `local` is illegal at file top level in MaxScript, so resolve the folder inline.
 fileIn ((getFilenamePath (getSourceFileName())) + "lib/structs.ms")
