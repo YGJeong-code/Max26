@@ -1,0 +1,18 @@
+# Claude Code local config
+.claude/
+
+# 3ds Max temp / autosave
+*.bak
+*.bak1
+*.bak2
+*.bak3
+~*
+
+# OS junk
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Editor
+.vscode/
+*.code-workspace.user
