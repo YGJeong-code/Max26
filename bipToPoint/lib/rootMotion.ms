@@ -523,6 +523,24 @@ struct RootMotionTool
 		-- Set up controller tree on RootController + wire all 11 parameter wires.
 		_setupRootMotionWires rc ex1 ex2 ikChain bipRoot
 
+		-- Constrain FBX root bone to follow RootController_Xtras. Without this,
+		-- the controller animates but nothing in the skeleton picks up its motion.
+		-- relative:on so the (root, rc) offset at setup time becomes the baseline
+		-- (both should already be at world origin in a clean rig).
+		local fbxRoot = getNodeByName "root" exact:true
+		if fbxRoot != undefined then
+		(
+			fbxRoot.position.controller = Position_Constraint()
+			fbxRoot.position.controller.relative = on
+			fbxRoot[3][1].constraints.appendTarget rc 50
+
+			fbxRoot.rotation.controller = Orientation_Constraint()
+			fbxRoot.rotation.controller.relative = on
+			fbxRoot[3][2].constraints.appendTarget rc 50
+		)
+		else
+			format "Warning: FBX root bone not found — root won't follow RootController_Xtras.\n"
+
 		addToLayer "99_XtrasBone"        #(p1, ex1, ex2, p2, ik1, ik2, ik3, ikChain) initialOn:false
 		addToLayer "10_ControllerBiped"  #(rc)                                       initialOn:true
 

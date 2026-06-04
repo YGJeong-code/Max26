@@ -205,8 +205,25 @@ struct BipAlignTool
 		biped.setTransform bipS.myToeR #pos (pointS.myToeRPT.transform.pos) True
 		biped.setTransform bipS.myToeR #rotation (pointS.myToeRPT.transform.rotation) True
 
-		-- boxmode
+		-- boxmode for mapped bones
 		for i in bipS.myAllList do i.boxmode = on
+
+		-- boxmode for no-idx twist bones (not in b2p_BoneMap because we don't
+		-- align them, but they exist in the biped and should display the same).
+		-- Suffix without spaces — $ fuzzy match resolves "Bip001LForeTwist" to
+		-- the real "Bip001 L ForeTwist". See [[reference-biped-twist-names]].
+		local myName = "Bip001"
+		local twistRoots = #(
+			"LUpArmTwist",  "RUpArmTwist",
+			"LForeTwist",   "RForeTwist",
+			"LThighTwist",  "RThighTwist",
+			"LCalfTwist",   "RCalfTwist"
+		)
+		for suf in twistRoots do
+		(
+			local n = execute ("$" + myName + suf)
+			if n != undefined do n.boxmode = on
+		)
 
 		-- weapon props
 		makeWeaponBone()

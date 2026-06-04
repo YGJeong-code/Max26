@@ -19,10 +19,12 @@ fileIn ((getFilenamePath (getSourceFileName())) + "lib/fbxToBip.ms")
 fileIn ((getFilenamePath (getSourceFileName())) + "lib/layer.ms")
 fileIn ((getFilenamePath (getSourceFileName())) + "lib/ikBone.ms")
 fileIn ((getFilenamePath (getSourceFileName())) + "lib/rootMotion.ms")
+fileIn ((getFilenamePath (getSourceFileName())) + "lib/footContact.ms")
+fileIn ((getFilenamePath (getSourceFileName())) + "lib/resetScene.ms")
 
 try ( destroyDialog YG_bipToPoint ) catch()
 
-rollout YG_bipToPoint "Biped To Point" width:152 height:288
+rollout YG_bipToPoint "Biped To Point" width:152 height:476
 (
 	-- Struct instances are local to the rollout to avoid polluting global scope.
 	local myBipStruct, myPointStruct, myFbxStruct
@@ -36,6 +38,15 @@ rollout YG_bipToPoint "Biped To Point" width:152 height:288
 	groupBox grp_extras "Extras" pos:[4,188] width:144 height:96
 	button btn_IKBone           "IK Bone"                 pos:[8,204] width:136 height:32 align:#left
 	button btn_rootMotion       "Root Motion"             pos:[8,244] width:136 height:32 align:#left
+
+	groupBox grp_footContact "Foot Contact"                pos:[4,288] width:144 height:120
+	spinner spn_groundZ         "Ground Z (cm):"          pos:[14,304] fieldwidth:56 range:[-100000, 100000, 8.8] type:#float scale:0.1
+	spinner spn_footTh          "Threshold (cm):"         pos:[14,324] fieldwidth:56 range:[0.0, 10000, 2.0] type:#float scale:0.1
+	button btn_footContact      "Foot Contact"            pos:[8,344] width:136 height:32 align:#left
+	button btn_footContactRm    "Remove Foot Contact"     pos:[8,380] width:136 height:18 align:#left
+
+	groupBox grp_reset "Reset"                             pos:[4,412] width:144 height:56
+	button btn_resetScene       "Reset (FBX + Mesh only)" pos:[8,428] width:136 height:32 align:#left
 
 	fn refreshStructs =
 	(
@@ -140,6 +151,48 @@ rollout YG_bipToPoint "Biped To Point" width:152 height:288
 				local t = RootMotionTool bipS:myBipStruct
 				t.run()
 			)
+		)
+	)
+
+	on btn_footContact pressed do
+	(
+		local rootObj = getNodeByName "root" exact:true
+		local footL   = getNodeByName "foot_l" exact:true
+		local footR   = getNodeByName "foot_r" exact:true
+		if rootObj == undefined then
+			showError "FBX root bone not found."
+		else if footL == undefined or footR == undefined then
+			showError "foot_l / foot_r not found in scene."
+		else
+		(
+			undo "Foot Contact" on
+			(
+				(FootContactTool()).run rootObj footL footR spn_groundZ.value spn_footTh.value
+			)
+		)
+	)
+
+	on btn_footContactRm pressed do
+	(
+		local rootObj = getNodeByName "root" exact:true
+		if rootObj != undefined do
+		(
+			undo "Foot Contact Remove" on
+			(
+				(FootContactTool()).remove rootObj
+			)
+		)
+	)
+
+	on btn_resetScene pressed do
+	(
+		if (queryBox "Delete all rig nodes and keep only FBX bones + meshes?" title:"Reset Scene") then
+		(
+			undo "Reset Scene" on
+			(
+				(ResetSceneTool()).run()
+			)
+			refreshStructs()
 		)
 	)
 

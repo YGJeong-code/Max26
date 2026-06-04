@@ -9,28 +9,26 @@ Autodesk 3ds Max (2024/2025/2026 대상) 용 MaxScript 도구 모음. 스크립�
 ## 도구 목록
 
 ### bipToPoint — Biped ↔ FBX 본 변환 / 루트모션 셋업
-FBX 스켈레톤 메시에 Biped 를 맞추고, Point 헬퍼를 통해 정렬한 뒤 FBX 본을 Biped 에 연결하는 워크플로 + 루트모션 리그 자동 생성.
+FBX 스켈레톤 메시에 Biped 를 맞추고, Point 헬퍼를 통해 정렬한 뒤 FBX 본을 Biped 에 연결하는 워크플로 + 루트모션 / 트위스트 / 컨택 / 리셋 도구 모음.
 
 UI 그룹:
 - **Build (4 버튼)**: 1.Make Biped → 2.Make Point → 3.Biped To Point → 4.FBX connect To Biped
 - **Extras (2 버튼)**: IK Bone (UE 스타일 ik_foot/hand 헬퍼), Root Motion (RootIK_Xtras 셋업)
+- **Foot Contact (2 spinner + 2 버튼)**: Ground Z / Threshold 설정 → Foot Contact 버튼이 FBX `root` 본에 `Foot_Contact` Custom Attribute 추가. `contact_l` / `contact_r` 가 라이브로 `(foot.z - ground_z) <= threshold ? 1 : 0` 평가 (Float_Script). FBX 익스포트 시 root 노드의 커브로 베이크.
+- **Reset (1 버튼)**: 씬에서 FBX 본 (`root` 와 그 자손) + 메시(`GeometryClass`, Biped 제외) 만 남기고 나머지 다 삭제. FBX 본의 위치/회전 컨트롤러를 Position_XYZ / Euler_XYZ 로 리셋 (월드 transform 은 스냅샷-복원으로 유지).
+
+워크플로 특성:
+- **Biped 트위스트 링크**: `MakeBipedTool` 이 UpperArm / ForeArm / Thigh / Calf 각각 3 트위스트 링크로 생성. 매핑은 인덱스 있는 (1, 2) 만 사용, no-idx 는 사용하지 않음 (자세한 매핑은 메모리 [Biped twist names] 참고).
+- **트위스트 본의 컨스트레인트**: `fbxToBip` 에서 `_twist_` 가 이름에 포함된 FBX 본은 Position 없이 **Rotation 만** Biped 트위스트에 컨스트레인 — 위치는 부모 림 본에서 상속.
+- **레이어 정리** (`layer.ms`): FBX 트위스트 본은 `02_ExportBone` 에서 제외하고 `99_CurrectiveBone` 로 보냄. Biped 의 no-idx 트위스트는 `10_ControllerBiped` 로.
+- **Biped To Point** 끝에 mapped + no-idx 트위스트 모두 `boxmode = on` (시각 통일).
+- **Root Motion** 셋업 끝에 FBX `root` 본을 `RootController_Xtras` 에 Position/Orientation 컨스트레인 — 컨트롤러 모션이 스켈레톤으로 전달되도록.
 
 lib 분할:
-- `structs.ms` — 본 매핑 테이블 + 동적 struct 생성 (bipStruct/pointStruct/fbxStruct)
+- `structs.ms` — 본 매핑 테이블 (`b2p_BoneMap`, 트위스트 포함 68 entries) + 동적 struct 생성 (bipStruct/pointStruct/fbxStruct)
 - `makeBiped.ms`, `makePoint.ms`, `bipAlign.ms`, `fbxToBip.ms`, `layer.ms`, `ikBone.ms`, `rootMotion.ms`
-
-### skinToPoint — 스킨 본을 Point 로 스왑
-Skin 모디파이어가 적용된 메시의 루트 본 계층을 walk 해서 Point 헬퍼로 교체하는 도구. 단독 폴더로 분리됨.
-
-워크플로 (단일 버튼으로 6단계 자동 진행):
-1. Skin envelope `.env` 파일로 저장 + 메시에 `skin_` 프리픽스
-2. 본 이름 스냅샷 (재등록용)
-3. 루트 본 이하 전체 계층을 `pt_<name>` Point 로 생성 (부모-자식 관계 미러링)
-4. 원본 본 전체 삭제
-5. 모든 `pt_*` Point 의 프리픽스 제거 → 원래 본 이름 takeover
-6. Skin 모디파이어에 새 Point 들을 본으로 재등록 + envelope 재로드
-
-본 이름 패턴별 시각 스타일 자동 분류 (root/pelvis/twist/finger/weapon/ik_*/attach/camera/FACIAL).
+- `footContact.ms` — `gFootContactCA` (4 #float 파라미터) + `FootContactTool`
+- `resetScene.ms` — `ResetSceneTool` (transform snapshot → 컨트롤러 리셋 → 복원 → cleanup)
 
 ### sceneDump — 씬 구조 텍스트 덤프
 씬의 노드 트리·컨트롤러·CA·와이어·헬퍼 시각 속성을 텍스트로 저장. `.max` 파일을 직접 공유하지 않고도 구조 분석 가능.

@@ -6,27 +6,25 @@ Autodesk 3ds Max 용 MaxScript 툴 모음. UE 익스포트 파이프라인용 �
 
 | 폴더 | 설명 |
 |------|------|
-| `bipToPoint/` | Biped ↔ FBX 본 정렬, IK Bone, Root Motion 셋업 |
-| `skinToPoint/` | Skin 모디파이어 메시의 본 계층을 Point 헬퍼로 스왑 |
+| `bipToPoint/` | Biped ↔ FBX 본 정렬, IK Bone, Root Motion, Foot Contact, Reset 셋업 |
 | `sceneDump/` | 씬 노드 / 컨트롤러 / CA / 와이어 텍스트 덤프 |
 | `_diag/` | 일회성 진단 / 검증 스크립트 |
 
 ## bipToPoint
 
-| 단계 | 버튼 | 기능 |
+| 그룹 | 버튼 / 컨트롤 | 기능 |
 |------|------|------|
-| 1 | Make Biped | 선택 메시 높이에 맞춘 Biped 생성 (twist links 3) |
-| 2 | Make Point | Biped 본 위치에 `pt_*` Point 헬퍼 생성 |
-| 3 | Biped To Point | Point 를 따라가도록 Biped 정렬 |
-| 4 | FBX connect To Biped | FBX 스킨본을 Biped 에 Position/Orient 컨스트레인 + 레이어 정리 |
+| Build | 1. Make Biped | 선택 메시 높이에 맞춘 Biped 생성 + 림당 트위스트 3 링크 |
+| Build | 2. Make Point | Biped 본 위치에 `pt_*` Point 헬퍼 생성 → FBX 위치로 정렬 + LookAt → Euler 베이크 |
+| Build | 3. Biped To Point | Point 를 따라가도록 Biped 정렬 + 모든 본 / 트위스트 박스 모드 |
+| Build | 4. FBX connect To Biped | FBX 스킨본을 Biped 에 컨스트레인 (트위스트는 회전만) + 레이어 정리 (FBX 트위스트는 99_CurrectiveBone) |
 | Extras | IK Bone | UE 스타일 `ik_foot_*`, `ik_hand_*` 헬퍼 생성 |
-| Extras | Root Motion | `RootIK_Xtras` Custom Attribute 리그 + 와이어 자동 셋업 |
+| Extras | Root Motion | `RootIK_Xtras` + RootController_Xtras Custom Attribute 리그 + FBX root 의 컨스트레인 |
+| Foot Contact | Ground Z / Threshold spinner | 접지 기준값 입력 |
+| Foot Contact | Foot Contact / Remove | FBX root 에 `Foot_Contact` CA (ground_z / threshold / contact_l / contact_r) 추가/제거. contact 값은 라이브 Float_Script |
+| Reset | Reset (FBX + Mesh only) | FBX 본 + 메시만 남기고 다 삭제 + FBX 본 컨스트레인트 제거 (transform 보존) |
 
-`lib/` 분할: `structs.ms` (본 매핑 테이블 + 동적 struct 생성), `makeBiped.ms`, `makePoint.ms`, `bipAlign.ms`, `fbxToBip.ms`, `layer.ms`, `ikBone.ms`, `rootMotion.ms`.
-
-## skinToPoint
-
-단일 버튼으로 6단계 자동 진행 — envelope 저장 → 본 이름 스냅샷 → Point 계층 생성 → 원본 본 삭제 → Point 이름 takeover → Skin 재등록 + envelope 재로드. 본 이름 패턴별 시각 스타일(root / pelvis / twist / finger / weapon / ik_* / FACIAL) 자동 분류.
+`lib/` 분할: `structs.ms` (본 매핑 테이블 + 동적 struct 생성), `makeBiped.ms`, `makePoint.ms`, `bipAlign.ms`, `fbxToBip.ms`, `layer.ms`, `ikBone.ms`, `rootMotion.ms`, `footContact.ms`, `resetScene.ms`.
 
 ## sceneDump
 
